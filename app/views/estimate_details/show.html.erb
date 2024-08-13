@@ -1,0 +1,28 @@
+<%= link_to('Back to Estimates', estimates_path())%>
+
+<h1><%= @estimate_detail.estimate.title %></h1>
+
+<table>
+  <caption>
+    <% @estimate_detail.ancestors.reverse_each do |detail| %>
+      <%= link_to(detail.title, estimate_detail_path(detail.id)) %> >
+    <% end %>
+    <%= @estimate_detail.title %>
+  </caption>
+  <thead>
+    <tr>
+      <th>Order nubmer</th>
+      <th>Title</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @estimate_detail.children.each do |detail| %>
+      <tr>
+        <td class="order"><%= detail.order_number %></td>
+        <td class="title"><%= detail.leaf? ? detail.title : link_to(detail.title, estimate_detail_path(detail.id)) %></td>
+        <td class="price"><%= detail.self_and_descendants.sum("unit_price * amount") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
